@@ -1,7 +1,7 @@
 package ascii
 
 import (
-    "strings"
+	"strings"
 )
 
 // AsciiArt creates ASCII art for the given words based on the contents provided.
