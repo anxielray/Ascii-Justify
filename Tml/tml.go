@@ -1,9 +1,9 @@
 package terminal
 
 import (
-    "os"
-    "syscall"
-    "unsafe"
+	"os"
+	"syscall"
+	"unsafe"
 )
 
 // GetTerminalSize returns the width and height of the terminal.
