@@ -39,6 +39,23 @@ func main() {
 		expectedFormat()
 	}
 
+	// Handle extension errors...
+	if strings.Contains(banner, ".") {
+		if !strings.HasSuffix(banner, ".txt") {
+			fmt.Println("Error: The allowed format is .txt for textual files")
+			return
+		}
+	} else {
+		banner = fmt.Sprintf("%s.txt", banner)
+	}
+	banner = strings.ToLower(banner)
+	bannerFile := fmt.Sprintf("Banner_files/%s", banner)
+	data, err := os.ReadFile(bannerFile)
+	if err != nil {
+		fmt.Println("Error reading from file:", err)
+		return
+	}
+
 	input = strings.ReplaceAll(input, "\\n", "\n")
 	input = strings.ReplaceAll(input, "\\t", "    ")
 	if strings.Contains(input, "\\b") {
@@ -52,22 +69,6 @@ func main() {
 	}
 	words := strings.Split(input, "\n")
 
-	// Handle extension errors...
-	if strings.Contains(banner, ".") {
-		if !strings.HasSuffix(banner, ".txt") {
-			fmt.Println("Error: The allowed format is .txt for textual files")
-			return
-		}
-	} else {
-		banner = fmt.Sprintf("%s.txt", banner)
-	}
-	banner = strings.ToLower(banner)
-	bannerFile := banner
-	data, err := os.ReadFile(bannerFile)
-	if err != nil {
-		fmt.Println("Error reading from file:", err)
-		return
-	}
 	Art := FileStat(words, string(data), bannerFile)
 
 	w, _, err := terminal.GetTerminalSize()
