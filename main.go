@@ -9,34 +9,30 @@ import (
 	"strings"
 )
 
-//declre the common error message for the expected format required as input
-func expectedFormat() {
+//declare the common error message for the expected format required as input
+func errorText() {
 	fmt.Println("Usage: go run . --align=[OPTION] [STRING] [BANNER]")
 	os.Exit(1)
 }
 
 func main() {
 	if len(os.Args) < 4 {
-		expectedFormat()
+		errorText()
 	}
 	var (
-		alignFormat string
-		input       string
-		banner      string
+		alignFormat string = os.Args[1]
+		input       string = os.Args[2]
+		banner      string = os.Args[3]
 	)
-
-	alignFormat = os.Args[1]
-	input = os.Args[2]
-	banner = os.Args[3]
 
 	if strings.HasPrefix(alignFormat, "--align=") {
 		alignFormat = strings.TrimPrefix(alignFormat, "--align=")
 	} else {
-		expectedFormat()
+		errorText()
 	}
 
 	if input == "" {
-		expectedFormat()
+		errorText()
 	}
 
 	// Handle extension errors...
@@ -60,6 +56,8 @@ func main() {
 	input = strings.ReplaceAll(input, "\\t", "    ")
 	if strings.Contains(input, "\\b") {
 		input = strings.ReplaceAll(input, "\\b", "\b")
+
+		//handle the backspace carefully
 		for i := 0; i < len(input); i++ {
 			b := strings.Index(input, "\b")
 			if b > 0 {
@@ -71,11 +69,7 @@ func main() {
 
 	Art := FileStat(words, string(data), bannerFile)
 
-	w, _, err := terminal.GetTerminalSize()
-	if err != nil {
-		fmt.Println("Error computing the Terminal size:", err)
-		return
-	}
+	w, _ := terminal.TerminalDimensions()
 
 	var formatedText string
 
@@ -89,7 +83,7 @@ func main() {
 	case "right":
 		formatedText = ft.FormatRight(Art, w)
 	default:
-		expectedFormat()
+		errorText()
 	}
 
 	fileText := DefineBanner(formatedText, banner)
@@ -119,18 +113,23 @@ func shadow(text string) string {
 }
 
 func FileStat(words []string, data, banner string) string {
+
 	fileInfo, err := os.Stat(banner)
 	if err != nil {
 		fmt.Println("Error reading from the specified file: ", err)
 	}
+
 	fileSize := fileInfo.Size()
+
 	var Art string
-	if fileSize == 7463 || fileSize == 6623 || fileSize == 4496 || fileSize == 4703 {
+
+	if fileSize == 7463 || fileSize == 6623 || fileSize == 4703 {//Windows: || fileSize == 4496  for thinkertoy
 		content := strings.Split(string(data), "\n")
+
 		Art = ascii.AsciiArt(words, content)
 	} else {
-		fmt.Println("Error: Seeme like there is an error with the file, ", fileSize)
-		os.Exit(0)
+		fmt.Println("Error! ", fileSize)
+		os.Exit(1)
 	}
 	return Art
 }

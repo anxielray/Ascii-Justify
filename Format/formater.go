@@ -31,7 +31,7 @@ func FormatCenter(text string, width int) string {
 }
 
 func FormatJustify(input, banner string, width int) string {
-	bannerFile := banner
+	bannerFile := "./Banner_files/"+banner
 	bannerText, err := os.ReadFile(bannerFile)
 	if err != nil {
 		fmt.Println("Error reading from file:", err)
@@ -44,7 +44,7 @@ func FormatJustify(input, banner string, width int) string {
 	}
 	fileSize := fileInfo.Size()
 	var contents []string
-	if fileSize == 6623 || fileSize == 4703 || fileSize == 7463 || fileSize == 4496 {
+	if fileSize == 6623 || fileSize == 4703 || fileSize == 7463 { // || fileSize == 4496
 		contents = strings.Split(string(bannerText), "\n")
 	} else {
 		return "Error: Invalid banner file size\n"
